@@ -19,8 +19,10 @@ int main(void)
     map[2][3] = '1';
     map[3][2] = '1';
     map[3][3] = '1';
+    for (int i = 0; i < 5; i++)
+        printf("%s\n", map[i]);
 
-    raycast_t *raycast = raycast_create((char **)map, (ray_twod_t){0, 0});
+    raycast_t *raycast = raycast_create((char **)map, (ray_twod_t){1.5, 1.5});
 
     printf("%zu\n", raycast_raycast(raycast));
     if (!raycast)

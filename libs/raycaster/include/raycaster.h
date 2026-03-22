@@ -11,7 +11,11 @@
     // Includes default libs
     #include <stdio.h>
     #include <stdlib.h>
+    #include <stddef.h>
     #include <stdint.h>
+    #include <stdbool.h>
+    #include <limits.h>
+    #include <float.h>
     #include <math.h>
 
     // Includes private libs
@@ -21,6 +25,10 @@
     #define RAYCAST_SUCC 0
     #define RAYCAST_FAIL -1
     #define EMPTY_VERTEX -1
+
+    // Hardcoded values
+    #define PI 3.141592
+    #define DEG_TO_RAD PI / 180
 
 // Typedefs
 
@@ -57,7 +65,7 @@ typedef struct ray_render_s {
     The degrees visible in the raycast.
     Defaults to 70.
     */
-    uint8_t degrees;
+    uint8_t degree;
 
     /*
     Distance factor applied to the height of the raycast draw.
