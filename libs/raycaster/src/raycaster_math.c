@@ -6,6 +6,7 @@
 */
 
 #include "./../include/raycaster.h"
+#include "./private.h"
 
 size_t number_in_range_f(float number, float base, float range)
 {

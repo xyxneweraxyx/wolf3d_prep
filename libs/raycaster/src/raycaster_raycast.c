@@ -8,32 +8,18 @@
 #include "./../include/raycaster.h"
 #include "./private.h"
 
-static int str_len(const char *restrict str)
+static int ini_vals(raycast_t *raycast, ray_exec_t *data,
+    sfRenderWindow *window)
 {
-    int i = 0;
+    sfVector2u win_size = sfRenderWindow_getSize(window);
 
-    for (; str[i]; i++);
-    return i;
-}
-
-static int ini_vals(raycast_t *raycast, ray_exec_t *data)
-{
-    float ray_amount = 0;
-
+    data->screen_width = (float)win_size.x;
+    data->screen_height = (float)win_size.y;
     data->degree_begin = raycast->origin.degree - raycast->render.degree / 2;
     data->degree_end = raycast->origin.degree + raycast->render.degree / 2;
+    data->degree_step = raycast->render.degree / data->screen_width;
     data->map_x = str_len(raycast->origin.map[0]);
-    ray_amount = (data->degree_end - data->degree_begin)
-        / raycast->calculations.degree_add;
     for (; raycast->origin.map[data->map_y]; data->map_y++);
-    if (raycast->result)
-        c_free(raycast->result, raycast->alloc);
-    raycast->result = c_alloc(sizeof(shape_t),
-        (int)(ray_amount) + 1, raycast->alloc);
-    if (!raycast->result)
-        return RAYCAST_FAIL;
-    for (int i = 0; i < (int)ray_amount + 1; i++)
-        raycast->result[i].dist = -1;
     return RAYCAST_SUCC;
 }
 
@@ -46,8 +32,6 @@ static void ini_dda(raycast_t *raycast, ray_exec_t *data)
 
     data->map_cur_x = (int)raycast->origin.origin.x;
     data->map_cur_y = (int)raycast->origin.origin.y;
-    data->dx = 0;
-    data->dy = 0;
     data->dx = (cos_a >= 0) ? 1 : -1;
     data->dy = (sin_a >= 0) ? 1 : -1;
     data->delta_dist_x = (fabsf(cos_a) < 1e-3) ? FLT_MAX : fabsf(1 / cos_a);
@@ -80,80 +64,60 @@ static bool dda_check_for_collision(ray_exec_t *data)
     return true;
 }
 
-static void store_new_shape(raycast_t *raycast, ray_exec_t *data)
-{
-    float side_x;
-    float side_z;
-    float height = raycast->calculations.height;
-    shape_t *shape = &raycast->result[data->written_shapes];
-
-    if (data->x) {
-        side_x = (data->dx < 0) ? data->map_cur_x + 1 : data->map_cur_x;
-        side_z = data->map_cur_y;
-        shape->vertices[0] = (ray_threed_t){side_x, height + 1, side_z};
-        shape->vertices[1] = (ray_threed_t){side_x, height + 1, side_z + 1};
-        shape->vertices[2] = (ray_threed_t){side_x, height, side_z + 1};
-        shape->vertices[3] = (ray_threed_t){side_x, height, side_z};
-    } else {
-        side_x = data->map_cur_x;
-        side_z = (data->dy < 0) ? data->map_cur_y + 1 : data->map_cur_y;
-        shape->vertices[0] = (ray_threed_t){side_x, height + 1, side_z};
-        shape->vertices[1] = (ray_threed_t){side_x + 1, height + 1, side_z};
-        shape->vertices[2] = (ray_threed_t){side_x + 1, height, side_z};
-        shape->vertices[3] = (ray_threed_t){side_x, height, side_z};
-    }
-    shape->dist = data->min_dist;
-}
-
-static size_t single_raycast(raycast_t *raycast, ray_exec_t *data)
+static bool single_raycast(raycast_t *raycast, ray_exec_t *data)
 {
     ini_dda(raycast, data);
     for (size_t i = 0; i < raycast->calculations.max_dist; i++) {
         if (!dda_check_for_collision(data))
-            return RAYCAST_SUCC;
+            return false;
         if (raycast->origin.map[data->map_cur_y][data->map_cur_x]
-            == raycast->origin.wall) {
-            data->min_x = (size_t)data->map_cur_x;
-            data->min_y = (size_t)data->map_cur_y;
-            store_new_shape(raycast, data);
-            data->written_shapes++;
-            return RAYCAST_SUCC;
-        }
+            == raycast->origin.wall)
+            return true;
     }
-    store_new_shape(raycast, data);
-    data->written_shapes++;
-    return RAYCAST_SUCC;
+    return false;
 }
 
-static int compare_shapes(const void *a, const void *b)
+static void draw_column(raycast_t *raycast, ray_exec_t *data,
+    float col_x, setfml_t *setfml)
 {
-    float shape_a = ((shape_t *)a)->dist;
-    float shape_b = ((shape_t *)b)->dist;
+    float cam_angle = raycast->origin.degree * DEG_TO_RAD;
+    float ray_angle = data->degree_modulo * DEG_TO_RAD;
+    float perp_dist = data->min_dist * cosf(ray_angle - cam_angle);
+    float fov = raycast->render.degree * DEG_TO_RAD;
+    float proj_dist = (data->screen_height / 2.0f) / tanf(fov / 2.0f);
+    float wall_height = (proj_dist / perp_dist) * raycast->render.wall_height;
+    float col_y = (data->screen_height - wall_height) / 2.0f;
+    sfRectangleShape *col = sfRectangleShape_create();
 
-    if (shape_a < shape_b)
-        return 1;
-    if (shape_a > shape_b)
-        return -1;
-    return 0;
+    if (!col)
+        return;
+    if (raycast->modification)
+        raycast->modification(col, &(col_data_t){perp_dist, setfml, raycast});
+    sfRectangleShape_setSize(col, (sfVector2f){1.0f, wall_height});
+    sfRectangleShape_setPosition(col, (sfVector2f){col_x, col_y});
+    sfRenderWindow_drawRectangleShape(setfml->window, col, NULL);
+    sfRectangleShape_destroy(col);
 }
 
-size_t raycast_raycast(raycast_t *raycast)
+size_t raycast_raycast(raycast_t *raycast, setfml_t *setfml)
 {
     ray_exec_t data = {0};
+    float col_x = 0;
+    float degree = 0;
 
-    if (!raycast || !raycast->origin.map || !raycast->origin.map[0])
+    if (!raycast || !raycast->origin.map ||
+        !raycast->origin.map[0] || !setfml->window)
         return RAYCAST_FAIL;
-    if (ini_vals(raycast, &data) == RAYCAST_FAIL)
+    if (ini_vals(raycast, &data, setfml->window) == RAYCAST_FAIL)
         return RAYCAST_FAIL;
-    for (float degree = data.degree_begin;
-        degree <= data.degree_end;
-        degree += raycast->calculations.degree_add) {
+    degree = data.degree_begin;
+    while (degree <= data.degree_end) {
         data.degree_modulo = (((int)degree + 360) % 360)
             + (degree - (int)degree);
         if (single_raycast(raycast, &data))
-            return RAYCAST_FAIL;
+            draw_column(raycast, &data, col_x, setfml);
+        degree += data.degree_step;
+        col_x += 1;
     }
-    qsort(raycast->result, data.written_shapes,
-        sizeof(shape_t), compare_shapes);
     return RAYCAST_SUCC;
 }

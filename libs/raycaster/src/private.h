@@ -10,58 +10,36 @@
 
     #include "./../include/raycaster.h"
 
-// Typedefs
-
 typedef struct ray_exec_s {
 
     size_t map_x; // X size of the currently stored map.
     size_t map_y; // Y size of the currently stored map.
 
     float degree_begin; // The beginning point of the degrees for the raycast.
-    float degree_end; // The end point of the degrees for the raycast.
-
+    float degree_end;   // The end point of the degrees for the raycast.
     float degree_modulo; // The degrees with a modulo 360 applied.
+    float degree_step;  // Degrees per pixel column.
 
     int8_t dx; // Step direction on x axis (-1 or 1).
     int8_t dy; // Step direction on y axis (-1 or 1).
 
     float delta_dist_x; // Distance along the ray between two consecutive vertical grid lines.
     float delta_dist_y; // Distance along the ray between two consecutive horizontal grid lines.
-
     float dist_from_x;  // Distance to the next vertical grid crossing.
     float dist_from_y;  // Distance to the next horizontal grid crossing.
 
     int map_cur_x; // X index of the cell currently being traversed.
     int map_cur_y; // Y index of the cell currently being traversed.
 
-    float min_dist;  // Distance to the wall that was hit.
-    size_t min_x;    // X index of the hit wall cell.
-    size_t min_y;    // Y index of the hit wall cell.
+    float min_dist; // Distance to the wall that was hit.
+    bool x;         // If true, the wall was hit on an X side (for shading).
 
-    bool x; // If true, the wall was hit on an X side.
-    size_t written_shapes; // Amount of shapes written in the raycast's result.
+    float screen_width;  // Width of the render window in pixels.
+    float screen_height; // Height of the render window in pixels.
 
 } ray_exec_t;
 
-typedef struct ray_render_exec_s {
-
-    float screen_width; // Width of the render window in pixels.
-    float screen_height; // Height of the render window in pixels.
-    float cam_height; // Camera eye height (map units).
-
-    float cam_x; // Camera position on the x axis (map units).
-    float cam_z; // Camera position on the z axis (map units).
-
-    float cam_cos; // Cosine of the camera angle.
-    float cam_sin; // Sine of the camera angle.
-    
-    float proj_dist; // Projection distance derived from fov and screen width.
-
-} ray_render_exec_t;
-
 // Functions
-
-/// Math functions
 size_t number_in_range_f(float number, float base, float range);
 size_t number_in_range_i(int number, int base, int range);
 

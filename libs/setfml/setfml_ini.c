@@ -44,7 +44,7 @@ void setfml_fillparams(setfml_t *setfml)
 {
     if (!setfml)
         return;
-    setfml->params.window.fps = (uint8_t)60;
+    setfml->params.window.fps = (uint8_t)240;
     setfml->params.window.max_scr_res[0] = (uint16_t)1920;
     setfml->params.window.max_scr_res[1] = (uint16_t)1080;
     setfml->params.window.min_scr_res[0] = (uint16_t)800;
@@ -54,7 +54,7 @@ void setfml_fillparams(setfml_t *setfml)
     setfml->params.window.style = sfDefaultStyle;
     setfml->params.time.event = 0;
     setfml->params.time.draw = 0;
-    setfml->params.time.data = 50 * MILLI_TO_NANO;
+    setfml->params.time.data = 1 * MILLI_TO_NANO;
     setfml->params.time.render = 0;
 }
 

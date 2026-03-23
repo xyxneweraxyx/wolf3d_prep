@@ -21,6 +21,7 @@
 
     // Includes private libs
     #include "./../../c_alloc/c_alloc.h"
+    #include "./../../setfml/setfml.h"
 
     // Defines
     #define RAYCAST_SUCC 0
@@ -117,13 +118,6 @@ typedef struct ray_origin_s {
 typedef struct ray_calc_s {
 
     /*
-    The amount to add in the degrees loop over a single iteration.
-    An amount close to 0 will give a more precise raycast but will take longer.
-    Defaults to 1.
-    */
-    float degree_add;
-
-    /*
     The height at which the raycast is performed in the 2d world.
     A higher amount will result in returned shapes having a higher height.
     Defaults to 0.
@@ -139,19 +133,31 @@ typedef struct ray_calc_s {
 
 } ray_calc_t;
 
+typedef struct col_data_s {
+
+    /*
+    The distance from the column to the raycast's origin.
+    */
+    float distance;
+
+    /*
+    The setfml environment in which the column is being drawn.
+    */
+    setfml_t *setfml;
+
+    /*
+    The raycaster that was used to render the column.
+    */
+    struct raycast_s *raycast;
+
+} col_data_t;
+
 typedef struct raycast_s {
 
     /*
     The c_alloc object used for allocations during the raycast's existence.
     */
     c_alloc_t *alloc;
-
-    /*
-    An array of shapes, terminated by NULL.
-    Each "vertices" contains the coordinates of the four vertices to draw.
-    The array is NULL during the calculations. Allocations are automatic.
-    */
-    shape_t *result;
 
     /*
     Rendering options of the raycast.
@@ -167,6 +173,12 @@ typedef struct raycast_s {
     Calculation data of the raycast.
     */
     ray_calc_t calculations;
+
+    /*
+    Modification function.
+    This function allows for easy modification of the raycast's result.
+    */
+    void (*modification)(sfRectangleShape *column, col_data_t *data);
 
 } raycast_t;
 
@@ -189,13 +201,6 @@ Performs a raycast based on the parameters of raycast.
 On success, stores the results in raycast->result and returns RAYCAST_SUCC.
 On fail, returns RAYCAST_FAIL.
 */
-size_t raycast_raycast(raycast_t *raycast);
-
-/*
-Draws a raycast's result on a CSFML sfRenderWindow.
-On success, returns RAYCAST_SUCC.
-On fail, returns RAYCAST_FAIL.
-*/
-void raycast_render(raycast_t *raycast, sfRenderWindow *window);
+size_t raycast_raycast(raycast_t *raycast, setfml_t *setfml);
 
 #endif

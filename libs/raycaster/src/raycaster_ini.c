@@ -19,17 +19,16 @@ raycast_t *raycast_create(char **map, ray_twod_t origin)
     raycast = c_alloc(sizeof(raycast_t), 1, alloc);
     if (!raycast)
         return NULL;
-    raycast->result = NULL;
     raycast->alloc = alloc;
-    raycast->origin.degree = 120;
+    raycast->origin.degree = 0;
     raycast->origin.wall = '1';
     raycast->origin.map = map;
     raycast->origin.origin = origin;
-    raycast->render.degree = 240;
+    raycast->render.degree = 70;
     raycast->render.distance = 1;
     raycast->render.wall_height = 1;
     raycast->calculations.max_dist = 100;
-    raycast->calculations.degree_add = 45;
+    raycast->modification = NULL;
     return raycast;
 }
 
