@@ -2,7 +2,7 @@
 TARGET := wolf3d
 CC := clang
 FLAGS := -Wall -Wextra -g3 -O2
-LIBS := -lm
+LIBS := -lm -lcsfml-window -lcsfml-system -lcsfml-graphics -lcsfml-audio
 
 # Sources
 IGNORE := not_compiling

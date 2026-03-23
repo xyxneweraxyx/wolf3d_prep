@@ -43,13 +43,26 @@ typedef struct ray_exec_s {
 
 } ray_exec_t;
 
+typedef struct ray_render_exec_s {
+
+    float screen_width; // Width of the render window in pixels.
+    float screen_height; // Height of the render window in pixels.
+    float cam_height; // Camera eye height (map units).
+
+    float cam_x; // Camera position on the x axis (map units).
+    float cam_z; // Camera position on the z axis (map units).
+
+    float cam_cos; // Cosine of the camera angle.
+    float cam_sin; // Sine of the camera angle.
+    
+    float proj_dist; // Projection distance derived from fov and screen width.
+
+} ray_render_exec_t;
+
 // Functions
 
 /// Math functions
 size_t number_in_range_f(float number, float base, float range);
 size_t number_in_range_i(int number, int base, int range);
-
-/// String functions
-int str_len(const char *str);
 
 #endif

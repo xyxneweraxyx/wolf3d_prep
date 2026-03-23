@@ -8,6 +8,14 @@
 #include "./../include/raycaster.h"
 #include "./private.h"
 
+static int str_len(const char *restrict str)
+{
+    int i = 0;
+
+    for (; str[i]; i++);
+    return i;
+}
+
 static int ini_vals(raycast_t *raycast, ray_exec_t *data)
 {
     float ray_amount = 0;

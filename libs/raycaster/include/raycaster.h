@@ -17,6 +17,7 @@
     #include <limits.h>
     #include <float.h>
     #include <math.h>
+    #include <SFML/Graphics.h>
 
     // Includes private libs
     #include "./../../c_alloc/c_alloc.h"
@@ -189,5 +190,12 @@ On success, stores the results in raycast->result and returns RAYCAST_SUCC.
 On fail, returns RAYCAST_FAIL.
 */
 size_t raycast_raycast(raycast_t *raycast);
+
+/*
+Draws a raycast's result on a CSFML sfRenderWindow.
+On success, returns RAYCAST_SUCC.
+On fail, returns RAYCAST_FAIL.
+*/
+void raycast_render(raycast_t *raycast, sfRenderWindow *window);
 
 #endif
