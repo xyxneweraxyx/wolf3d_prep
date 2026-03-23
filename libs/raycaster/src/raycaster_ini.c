@@ -27,7 +27,8 @@ raycast_t *raycast_create(char **map, ray_twod_t origin)
     raycast->origin.origin = origin;
     raycast->render.degree = 240;
     raycast->render.distance = 1;
-    raycast->render.height = 0;
+    raycast->render.wall_height = 1;
+    raycast->calculations.max_dist = 100;
     raycast->calculations.degree_add = 45;
     return raycast;
 }

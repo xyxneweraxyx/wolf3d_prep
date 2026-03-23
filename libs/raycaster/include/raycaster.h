@@ -51,6 +51,12 @@ typedef struct shape_s {
     */
     ray_threed_t vertices[4];
 
+    /*
+    The distance from the raycast's origin to the shape's hitpoint.
+    Allows for painter's algorithm on the results.    
+    */
+    float dist;
+
 } shape_t;
 
 typedef struct ray_render_s {
@@ -60,6 +66,12 @@ typedef struct ray_render_s {
     Defaults to 0, the middle of the screen will be used.
     */
     int16_t height;
+
+    /*
+    Factor over the height of the walls.
+    Defaults to 1.
+    */
+    float wall_height;
 
     /*
     The degrees visible in the raycast.
@@ -110,6 +122,20 @@ typedef struct ray_calc_s {
     */
     float degree_add;
 
+    /*
+    The height at which the raycast is performed in the 2d world.
+    A higher amount will result in returned shapes having a higher height.
+    Defaults to 0.
+    */
+    float height;
+
+    /*
+    The maximum distance in cells that a ray from a raycast will traverse.
+    If a ray surpasses this distance, it will stop executing and assume void.
+    Defaults to 100.
+    */
+    size_t max_dist;
+
 } ray_calc_t;
 
 typedef struct raycast_s {
@@ -120,9 +146,9 @@ typedef struct raycast_s {
     c_alloc_t *alloc;
 
     /*
-    An array of shapes, terminated by NULL;
+    An array of shapes, terminated by NULL.
     Each "vertices" contains the coordinates of the four vertices to draw.
-    The  array is NULL during the calculations. Allocations are automatic.
+    The array is NULL during the calculations. Allocations are automatic.
     */
     shape_t *result;
 

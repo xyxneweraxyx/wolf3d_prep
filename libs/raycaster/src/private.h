@@ -27,8 +27,9 @@ typedef struct ray_exec_s {
 
     float delta_dist_x; // Distance along the ray between two consecutive vertical grid lines.
     float delta_dist_y; // Distance along the ray between two consecutive horizontal grid lines.
-    float side_dist_x;  // Distance to the next vertical grid crossing.
-    float side_dist_y;  // Distance to the next horizontal grid crossing.
+
+    float dist_from_x;  // Distance to the next vertical grid crossing.
+    float dist_from_y;  // Distance to the next horizontal grid crossing.
 
     int map_cur_x; // X index of the cell currently being traversed.
     int map_cur_y; // Y index of the cell currently being traversed.
@@ -38,6 +39,7 @@ typedef struct ray_exec_s {
     size_t min_y;    // Y index of the hit wall cell.
 
     bool x; // If true, the wall was hit on an X side.
+    size_t written_shapes; // Amount of shapes written in the raycast's result.
 
 } ray_exec_t;
 
