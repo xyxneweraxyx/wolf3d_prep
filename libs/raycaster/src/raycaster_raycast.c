@@ -15,8 +15,6 @@ static int ini_vals(raycast_t *raycast, ray_exec_t *data)
     data->degree_begin = raycast->origin.degree - raycast->render.degree / 2;
     data->degree_end = raycast->origin.degree + raycast->render.degree / 2;
     data->map_x = str_len(raycast->origin.map[0]);
-    data->map_y = 0;
-    data->written_shapes = 0;
     ray_amount = (data->degree_end - data->degree_begin)
         / raycast->calculations.degree_add;
     for (; raycast->origin.map[data->map_y]; data->map_y++);
@@ -26,7 +24,7 @@ static int ini_vals(raycast_t *raycast, ray_exec_t *data)
         (int)(ray_amount) + 1, raycast->alloc);
     if (!raycast->result)
         return RAYCAST_FAIL;
-    for (int i = 0; i <= (int)ray_amount + 1; i++)
+    for (int i = 0; i < (int)ray_amount + 1; i++)
         raycast->result[i].dist = -1;
     return RAYCAST_SUCC;
 }
@@ -133,7 +131,7 @@ static int compare_shapes(const void *a, const void *b)
 
 size_t raycast_raycast(raycast_t *raycast)
 {
-    ray_exec_t data;
+    ray_exec_t data = {0};
 
     if (!raycast || !raycast->origin.map || !raycast->origin.map[0])
         return RAYCAST_FAIL;
