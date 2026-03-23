@@ -80,19 +80,27 @@ static bool single_raycast(raycast_t *raycast, ray_exec_t *data)
 static void draw_column(raycast_t *raycast, ray_exec_t *data,
     float col_x, setfml_t *setfml)
 {
+    float cos_a = cosf(data->degree_modulo * DEG_TO_RAD);
+    float sin_a = sinf(data->degree_modulo * DEG_TO_RAD);
     float cam_angle = raycast->origin.degree * DEG_TO_RAD;
-    float ray_angle = data->degree_modulo * DEG_TO_RAD;
-    float perp_dist = data->min_dist * cosf(ray_angle - cam_angle);
+    float perp_dist = data->min_dist * cosf(data->degree_modulo * DEG_TO_RAD
+        - cam_angle);
     float fov = raycast->render.degree * DEG_TO_RAD;
     float proj_dist = (data->screen_height / 2.0f) / tanf(fov / 2.0f);
     float wall_height = (proj_dist / perp_dist) * raycast->render.wall_height;
     float col_y = (data->screen_height - wall_height) / 2.0f;
+    float hit_pos = data->x
+        ? raycast->origin.origin.y + data->min_dist * sin_a
+        : raycast->origin.origin.x + data->min_dist * cos_a;
+    float face_x = hit_pos - floorf(hit_pos);
+    float screen_x = col_x / data->screen_width;
     sfRectangleShape *col = sfRectangleShape_create();
 
     if (!col)
         return;
     if (raycast->modification)
-        raycast->modification(col, &(col_data_t){perp_dist, setfml, raycast});
+        raycast->modification(col,
+            &(col_data_t){setfml, raycast, perp_dist, face_x, screen_x});
     sfRectangleShape_setSize(col, (sfVector2f){1.0f, wall_height});
     sfRectangleShape_setPosition(col, (sfVector2f){col_x, col_y});
     sfRenderWindow_drawRectangleShape(setfml->window, col, NULL);

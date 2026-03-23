@@ -136,11 +136,6 @@ typedef struct ray_calc_s {
 typedef struct col_data_s {
 
     /*
-    The distance from the column to the raycast's origin.
-    */
-    float distance;
-
-    /*
     The setfml environment in which the column is being drawn.
     */
     setfml_t *setfml;
@@ -149,6 +144,22 @@ typedef struct col_data_s {
     The raycaster that was used to render the column.
     */
     struct raycast_s *raycast;
+
+    /*
+    The distance from the column to the raycast's origin.
+    */
+    float distance;
+
+    /*
+    The position (between 0 and 1) where the face was hit.
+    */
+    float face_x;
+
+    /*
+    The screen X-position (between 0 and 1) where the face was hit.
+    0 is the screen's left, 1 is the screen's right.
+    */
+    float screen_x;
 
 } col_data_t;
 
