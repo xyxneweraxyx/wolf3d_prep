@@ -85,16 +85,12 @@ static wolf_t *ini_main(c_alloc_t *alloc)
     if (!alloc)
         return NULL;
     wolf = c_alloc(sizeof(wolf_t), 1, alloc);
-    if (!wolf) {
-        c_delete(alloc, false);
+    if (!wolf)
         return destroy_return_null(wolf);
-    }
     wolf->alloc = alloc;
     wolf->map = create_map();
-    if (!wolf->map) {
-        c_delete(alloc, true);
+    if (!wolf->map)
         return destroy_return_null(wolf);
-    }
     return wolf;
 }
 
@@ -109,7 +105,8 @@ int main(void)
         return WOLF_FAIL;
     if (connect_callbacks(wolf) == WOLF_FAIL)
         return WOLF_FAIL;
-    //setfml_windowcreate(wolf->setfml);
-    //setfml_windowstart(wolf->setfml);
+    if (setfml_windowcreate(wolf->setfml) == (size_t)SETFML_FAIL)
+        return destroy_return_int(WOLF_FAIL, wolf);
+    setfml_windowstart(wolf->setfml);
     return destroy_return_int(WOLF_SUCC, wolf);
 }
