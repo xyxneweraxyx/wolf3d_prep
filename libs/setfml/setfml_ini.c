@@ -18,6 +18,8 @@ static size_t clamp(size_t x, size_t min, size_t max)
 
 static size_t setfml_closewindow(setfml_t *setfml, void *userdata)
 {
+    if (!userdata)
+        return (size_t)SETFML_FAIL;
     setfml_windowclose(setfml);
     return (size_t)SETFML_WINDOWCLOSING;
 }
@@ -27,7 +29,7 @@ static size_t setfml_resizewindow(setfml_t *setfml, void *userdata)
     sfVector2u realsize = {0, 0};
     sfVector2u fixedsize = {0, 0};
 
-    if (!setfml->window)
+    if (!setfml->window || !userdata)
         return (size_t)SETFML_FAIL;
     realsize = sfRenderWindow_getSize(setfml->window);
     fixedsize = sfRenderWindow_getSize(setfml->window);

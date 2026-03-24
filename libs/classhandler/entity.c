@@ -36,7 +36,7 @@ static void *find_entity_by_name(class_t *class,
         if (!entity)
             continue;
         if (!str_cmp(name, entity->name))
-            return (return_node) ? (void *)node : (void *)class;
+            return (return_node) ? (void *)node : (void *)entity;
     }
     return NULL;
 }
