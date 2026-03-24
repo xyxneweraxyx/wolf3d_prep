@@ -56,6 +56,11 @@ typedef struct entity_s {
     */
     char *data;
 
+    /*
+    The class object the entity is a part of. Assigned automatically.
+    */
+    class_t *class;
+
 } entity_t;
 
 typedef struct classhandler_s {
@@ -95,7 +100,7 @@ classhandler_t *classhandler_init(void);
 /*
 Destroys the class handler and all of its components.
 */
-void classhandler_destroy(void);
+void classhandler_destroy(classhandler_t *classhandler);
 
 
 /// Class functions
@@ -104,7 +109,7 @@ void classhandler_destroy(void);
 Creates a new class based on it's name and the size of it's data structure.
 Returns CLASSHANDLER_SUCC or CLASSHANDLER_FAIL.
 */
-size_t classhandler_classcreate(classhandler_t *classhandler,
+class_t *classhandler_classcreate(classhandler_t *classhandler,
     size_t byte_size, const char *name);
 
 /*
@@ -121,7 +126,7 @@ size_t classhandler_classdestroy(classhandler_t *classhandler,
 Creates and storess a new class entity.
 Returns CLASSHANDLER_SUCC or CLASSHANDLER_FAIL.
 */
-size_t classhandler_entitycreate(classhandler_t *classhandler,
+entity_t *classhandler_entitycreate(classhandler_t *classhandler,
     const char *classname, const char *entityname);
 
 /*

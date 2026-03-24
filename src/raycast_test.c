@@ -1,4 +1,4 @@
-#include "./../libs/raycaster/include/raycaster.h"
+/*#include "./../libs/raycaster/include/raycaster.h"
 #include "./../libs/setfml/setfml.h"
 
 size_t raycast_1(setfml_t *setfml, void *userdata)
@@ -120,4 +120,4 @@ int main(void)
 
 
     return 0;
-}
+}*/

@@ -5,7 +5,7 @@ FLAGS := -Wall -Wextra -g3 -O2
 LIBS := -lm -lcsfml-window -lcsfml-system -lcsfml-graphics -lcsfml-audio
 
 # Sources
-IGNORE := not_compiling
+IGNORE := no_compile
 
 # Normal sources
 ALL_SRC := $(shell find . -name '*.c')
