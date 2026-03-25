@@ -88,7 +88,7 @@ static void draw_column(raycast_t *raycast, ray_exec_t *data,
     float fov = raycast->render.degree * DEG_TO_RAD;
     float proj_dist = (data->screen_height / 2.0f) / tanf(fov / 2.0f);
     float wall_height = (proj_dist / perp_dist) * raycast->render.wall_height;
-    float col_y = (data->screen_height - wall_height) / 2.0f;
+    float col_y = (data->screen_height - wall_height + (raycast->render.height / perp_dist)) / 2.0f;
     float hit_pos = data->x
         ? raycast->origin.origin.y + data->min_dist * sin_a
         : raycast->origin.origin.x + data->min_dist * cos_a;

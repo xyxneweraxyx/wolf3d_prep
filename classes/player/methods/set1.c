@@ -22,6 +22,7 @@ size_t player_setdefault(entity_t *entity)
     player->jump_power = PLAYER_DEFAULT_JUMP_POWER;
     player->rotation = PLAYER_DEFAULT_ROTATION;
     player->rot_speed = PLAYER_DEFAULT_ROT_SPEED;
+    player->gravity = PLAYER_DEFAULT_GRAVITY;
     player->pos = (player_pos_t){1.5, 0, 1.5};
     player->state = PLAYER_IDLE;
     return (size_t)0;

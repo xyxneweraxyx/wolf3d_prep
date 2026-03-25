@@ -20,9 +20,10 @@
     #define PLAYER_DEFAULT_HEALTH 100
     #define PLAYER_DEFAULT_DMG 100
     #define PLAYER_DEFAULT_MOVE_SPEED 1
-    #define PLAYER_DEFAULT_JUMP_POWER 100
+    #define PLAYER_DEFAULT_JUMP_POWER 20
     #define PLAYER_DEFAULT_ROTATION 0
     #define PLAYER_DEFAULT_ROT_SPEED 30
+    #define PLAYER_DEFAULT_GRAVITY 1
 
 // Typedefs
 
@@ -30,7 +31,6 @@ typedef enum player_state_e {
     PLAYER_IDLE,
     PLAYER_MOVING,
     PLAYER_SPRINTING,
-    PLAYER_JUMPING,
 } player_state_t;
 
 typedef struct player_pos_s {
@@ -53,7 +53,9 @@ typedef struct player_s {
     float rotation;
     float rot_speed;
 
-    bool is_jumping;
+    float jmp_strength;
+    float gravity;
+    float jmp_gravity;
 
 } player_t;
 
@@ -61,6 +63,7 @@ typedef struct player_s {
 
 /// GET methods
 float player_getspeed(entity_t *entity);
+float player_getgravity(entity_t *entity);
 float player_getjumppower(entity_t *entity);
 float player_getrotation(entity_t *entity);
 float player_getrotspeed(entity_t *entity);
@@ -73,6 +76,7 @@ player_pos_t player_getpos(entity_t *entity);
 size_t player_setdefault(entity_t *entity);
 size_t player_setrotspeed(entity_t *entity, float value);
 size_t player_setrotation(entity_t *entity, float value);
+size_t player_setgravity(entity_t *entity, float value);
 size_t player_setspeed(entity_t *entity, float value);
 size_t player_setjumppower(entity_t *entity, float value);
 size_t player_sethealth(entity_t *entity, uint16_t value);

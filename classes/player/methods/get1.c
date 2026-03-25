@@ -19,6 +19,18 @@ float player_getrotation(entity_t *entity)
     return player->rotation;
 }
 
+float player_getgravity(entity_t *entity)
+{
+    player_t *player = NULL;
+
+    if (!entity ||
+        !entity->class ||
+        entity->class->byte_size != sizeof(player_t))
+        return -1;
+    player = (player_t *)entity->data;
+    return player->gravity;
+}
+
 float player_getrotspeed(entity_t *entity)
 {
     player_t *player = NULL;
