@@ -8,32 +8,40 @@
 #include "./../../include/wolf3d.h"
 #include "./callbacks.h"
 
+static void modify_raycast_data(raycast_t *ray, player_t *player)
+{
+    ray->origin.degree = player->rotation;
+    ray->origin.origin.x = player->pos.x;
+    ray->origin.origin.y = player->pos.z;
+    ray->render.height = player->pos.y;
+}
+
 static size_t raycast_function(setfml_t *setfml, void *userdata)
 {
-    raycast_t *ray = (raycast_t *)setfml->userdata;
+    wolf_t *wolf = (wolf_t *)setfml->userdata;
+    raycast_t *ray = wolf->raycast;
+    entity_t *entity = classhandler_fetchentityname(wolf->classhandler, CLASS_PLAYERS, NULL);
+    player_t *player = (player_t *)entity->data;
+
+    modify_raycast_data(ray, player);
     raycast_raycast(ray, setfml);
     return SETFML_SUCC;
 }
 
-static size_t handle_keys(setfml_t *setfml, void *userdata)
+static void shader(sfRectangleShape *col, col_data_t *data)
 {
-    raycast_t *ray = (raycast_t *)setfml->userdata;
-    float speed = 0.02f;
-    float rot_speed = 0.5f;
+    int shade = (255 - data->distance * 30);
+    shade = (shade < 0) ? 0 : shade;
+    texture_t *texture = setfml_texturefromname(data->setfml, "wall", false);
+    sfVector2u tex_size;
 
-    if (sfKeyboard_isKeyPressed(sfKeyZ)) {
-        ray->origin.origin.x += cosf(ray->origin.degree * DEG_TO_RAD) * speed;
-        ray->origin.origin.y += sinf(ray->origin.degree * DEG_TO_RAD) * speed;
-    }
-    if (sfKeyboard_isKeyPressed(sfKeyS)) {
-        ray->origin.origin.x -= cosf(ray->origin.degree * DEG_TO_RAD) * speed;
-        ray->origin.origin.y -= sinf(ray->origin.degree * DEG_TO_RAD) * speed;
-    }
-    if (sfKeyboard_isKeyPressed(sfKeyQ))
-        ray->origin.degree -= rot_speed;
-    if (sfKeyboard_isKeyPressed(sfKeyD))
-        ray->origin.degree += rot_speed;
-    return SETFML_SUCC;
+    sfRectangleShape_setFillColor(col, (sfColor){shade, shade, shade, 255});
+    if (!texture)
+        return;
+    tex_size = sfTexture_getSize(texture->texture);
+    sfRectangleShape_setTexture(col, texture->texture, sfFalse);
+    sfRectangleShape_setTextureRect(col, (sfIntRect){
+        (int)(data->face_x * tex_size.x), 0, 1, (int)tex_size.y});
 }
 
 int connect_raycasts(wolf_t *wolf)
@@ -46,12 +54,12 @@ int connect_raycasts(wolf_t *wolf)
     if (!entity || !entity->data)
         return WOLF_FAIL;
     plr = (player_t *)entity->data;
-    raycast = raycast_create(wolf->map, &(ray_twod_t){plr->pos.x+14, plr->pos.z+14});
+    raycast = raycast_create(wolf->map, &(ray_twod_t){plr->pos.x, plr->pos.z});
     if (!raycast)
         return WOLF_FAIL;
+    raycast->modification = shader;
+    wolf->raycast = raycast;
     setfml_add(wolf->setfml, &(setfml_func_comp_t){NULL, &raycast_function},
-        "raycast", LOOP_DRAW);
-    setfml_add(wolf->setfml, &(setfml_func_comp_t){NULL, &handle_keys},
         "raycast", LOOP_DRAW);
     wolf->raycast = raycast;
     return WOLF_SUCC;

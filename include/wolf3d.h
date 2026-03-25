@@ -41,6 +41,9 @@
     // Classes definition
     #define CLASS_PLAYERS "players"
 
+    // Csfml assets
+    #define SFML_TXT_WALL "./assets/textures/wall.jpg"
+
 // Typedefs
 
 typedef enum gamestate_e {
@@ -63,6 +66,7 @@ typedef struct wolf_s {
 
 // Functions
 
+int ini_csfml_env(wolf_t *wolf);
 int connect_callbacks(wolf_t *wolf);
 int destroy_return_int(int RET_CODE, wolf_t *wolf);
 void *destroy_return_null(wolf_t *wolf);

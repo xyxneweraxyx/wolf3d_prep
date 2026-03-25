@@ -19,8 +19,10 @@
     // Defines
     #define PLAYER_DEFAULT_HEALTH 100
     #define PLAYER_DEFAULT_DMG 100
-    #define PLAYER_DEFAULT_MOVE_SPEED 100
+    #define PLAYER_DEFAULT_MOVE_SPEED 1
     #define PLAYER_DEFAULT_JUMP_POWER 100
+    #define PLAYER_DEFAULT_ROTATION 0
+    #define PLAYER_DEFAULT_ROT_SPEED 30
 
 // Typedefs
 
@@ -48,6 +50,11 @@ typedef struct player_s {
     float jump_power;
     float move_speed;
 
+    float rotation;
+    float rot_speed;
+
+    bool is_jumping;
+
 } player_t;
 
 // Methods
@@ -55,6 +62,8 @@ typedef struct player_s {
 /// GET methods
 float player_getspeed(entity_t *entity);
 float player_getjumppower(entity_t *entity);
+float player_getrotation(entity_t *entity);
+float player_getrotspeed(entity_t *entity);
 uint16_t player_gethealth(entity_t *entity);
 uint16_t player_getdmg(entity_t *entity);
 player_state_t player_getstate(entity_t *entity);
@@ -62,12 +71,22 @@ player_pos_t player_getpos(entity_t *entity);
 
 /// SET methods
 size_t player_setdefault(entity_t *entity);
+size_t player_setrotspeed(entity_t *entity, float value);
+size_t player_setrotation(entity_t *entity, float value);
 size_t player_setspeed(entity_t *entity, float value);
 size_t player_setjumppower(entity_t *entity, float value);
 size_t player_sethealth(entity_t *entity, uint16_t value);
 size_t player_setdmg(entity_t *entity, uint16_t value);
 size_t player_setstate(entity_t *entity, player_state_t state);
 size_t player_setpos(entity_t *entity, player_pos_t *pos);
+
+/// ADD methods
+size_t player_addrotation(entity_t *entity, float value);
+size_t player_addrotspeed(entity_t *entity, float value);
+size_t player_addspeed(entity_t *entity, float value);
+size_t player_addjumppower(entity_t *entity, float value);
+size_t player_addhealth(entity_t *entity, uint16_t value);
+size_t player_adddmg(entity_t *entity, uint16_t value);
 
 /// GAMEPLAY methods
 size_t player_gpmovex(entity_t *entity, float value);

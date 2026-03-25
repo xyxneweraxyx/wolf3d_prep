@@ -118,13 +118,6 @@ typedef struct ray_origin_s {
 typedef struct ray_calc_s {
 
     /*
-    The height at which the raycast is performed in the 2d world.
-    A higher amount will result in returned shapes having a higher height.
-    Defaults to 0.
-    */
-    float height;
-
-    /*
     The maximum distance in cells that a ray from a raycast will traverse.
     If a ray surpasses this distance, it will stop executing and assume void.
     Defaults to 100.

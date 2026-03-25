@@ -60,24 +60,6 @@ char **create_map(void)
     return map;
 }
 
-static int ini_csfml_env(wolf_t *wolf)
-{
-    setfml_t *setfml = NULL;
-    buttonfml_t *buttonfml = NULL;
-
-    if (!wolf)
-        return WOLF_FAIL;
-    setfml = setfml_ini((void *)wolf);
-    if (!setfml)
-        return WOLF_FAIL;
-    wolf->setfml = setfml;
-    buttonfml = buttonfml_ini(setfml);
-    if (!buttonfml)
-        return WOLF_FAIL;
-    wolf->buttonfml = buttonfml;
-    return WOLF_SUCC;
-}
-
 static wolf_t *ini_main(c_alloc_t *alloc)
 {
     wolf_t *wolf = NULL;

@@ -7,6 +7,32 @@
 
 #include "./../include/player.h"
 
+size_t player_sethealth(entity_t *entity, uint16_t value)
+{
+    player_t *player = NULL;
+
+    if (!entity ||
+        !entity->class ||
+        entity->class->byte_size != sizeof(player_t))
+        return (size_t)-1;
+    player = (player_t *)entity->data;
+    player->health = value;
+    return (size_t)0;
+}
+
+size_t player_setdmg(entity_t *entity, uint16_t value)
+{
+    player_t *player = NULL;
+
+    if (!entity ||
+        !entity->class ||
+        entity->class->byte_size != sizeof(player_t))
+        return (size_t)-1;
+    player = (player_t *)entity->data;
+    player->dmg = value;
+    return (size_t)0;
+}
+
 size_t player_setstate(entity_t *entity, player_state_t state)
 {
     player_t *player = NULL;

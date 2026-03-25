@@ -11,7 +11,7 @@ static int create_players(wolf_t *wolf)
 {
     class_t *class = classhandler_classcreate(wolf->classhandler,
         sizeof(player_t), CLASS_PLAYERS);
-    entity_t *player = NULL; // que 1 pour l'instant
+    entity_t *player = NULL;
 
     if (!class)
         return WOLF_FAIL;
@@ -19,7 +19,7 @@ static int create_players(wolf_t *wolf)
         CLASS_PLAYERS, PARAMS_DEFAULT_NAME);
     if (!player)
         return WOLF_FAIL;
-    if (player_setdefault(player)) // -1
+    if (player_setdefault(player))
         return WOLF_FAIL;
     return WOLF_SUCC;
 }

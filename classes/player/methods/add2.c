@@ -7,41 +7,28 @@
 
 #include "./../include/player.h"
 
-size_t player_gpmovex(entity_t *entity, float value)
+size_t player_addhealth(entity_t *entity, uint16_t value)
 {
     player_t *player = NULL;
 
     if (!entity ||
         !entity->class ||
         entity->class->byte_size != sizeof(player_t))
-        return -1;
+        return (size_t)-1;
     player = (player_t *)entity->data;
-    player->pos.x += value;
+    player->health += value;
     return (size_t)0;
 }
 
-size_t player_gpmovey(entity_t *entity, float value)
+size_t player_adddmg(entity_t *entity, uint16_t value)
 {
     player_t *player = NULL;
 
     if (!entity ||
         !entity->class ||
         entity->class->byte_size != sizeof(player_t))
-        return -1;
+        return (size_t)-1;
     player = (player_t *)entity->data;
-    player->pos.y += value;
-    return (size_t)0;
-}
-
-size_t player_gpmovez(entity_t *entity, float value)
-{
-    player_t *player = NULL;
-
-    if (!entity ||
-        !entity->class ||
-        entity->class->byte_size != sizeof(player_t))
-        return -1;
-    player = (player_t *)entity->data;
-    player->pos.z += value;
+    player->dmg += value;
     return (size_t)0;
 }
