@@ -12,6 +12,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <stdbool.h>
+    #include <math.h>
     #include <SFML/Graphics.h>
 
     // Custom includes
@@ -33,6 +34,7 @@ typedef enum item_state_e {
 typedef struct item_pos_s {
     float x;
     float y;
+    float z;
 } item_pos_t;
 
 typedef struct item_s {
@@ -54,6 +56,12 @@ typedef struct item_s {
     size_t closest_index;
 
 } item_t;
+
+// Tools
+
+/// Math functions
+float distance_2d(float pos1[2], float pos2[2]);
+float distance_3d(float pos1[3], float pos2[3]);
 
 // Methods
 
