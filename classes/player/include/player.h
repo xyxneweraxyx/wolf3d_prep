@@ -98,7 +98,7 @@ size_t player_gpmovey(entity_t *entity, float value);
 size_t player_gpmovez(entity_t *entity, float value);
 
 // les compliques pour plus tard
-//size_t player_gpjump(const char *name);
+size_t player_gpjump(entity_t *entity);
 //size_t player_gpattack(const char *name);
 //size_t player_gpdie(const char *name);
 

@@ -24,8 +24,9 @@ static void attempt_move(wolf_t *wolf, entity_t *plr, float x, float z)
         player_gpmovez(plr, z);
 }
 
-static void movement(wolf_t *wolf, entity_t *plr, player_t *data)
+static void movement(wolf_t *wolf, entity_t *plr)
 {
+    player_t *data = (player_t *)plr->data;
     float speed = data->move_speed / 100;
     float rot_speed = data->rot_speed / 100;
 
@@ -43,13 +44,13 @@ static void movement(wolf_t *wolf, entity_t *plr, player_t *data)
         player_addrotation(plr, rot_speed);
 }
 
-static void jump(player_t *data)
+static void jump(entity_t *entity)
 {
+    player_t *data = entity->data;
+
     if (!data->jmp_strength) {
-        if (sfKeyboard_isKeyPressed(sfKeySpace)) {
-            data->jmp_strength = data->jump_power;
-            data->jmp_gravity = 0;
-        }
+        if (sfKeyboard_isKeyPressed(sfKeySpace))
+            player_gpjump(entity);
     }
     data->jmp_gravity += data->gravity / 100;
     data->jmp_strength -= data->jmp_gravity;
@@ -70,8 +71,8 @@ static size_t keyboard(setfml_t *setfml, void *userdata)
 
     if (!player)
         return (size_t)SETFML_FAIL;
-    movement(wolf, entity, player);
-    jump(player);
+    movement(wolf, entity);
+    jump(entity);
     return (size_t)SETFML_SUCC;
 }
 

@@ -45,3 +45,17 @@ size_t player_gpmovez(entity_t *entity, float value)
     player->pos.z += value;
     return (size_t)0;
 }
+
+size_t player_gpjump(entity_t *entity)
+{
+    player_t *data = NULL;
+
+    if (!entity ||
+        !entity->class ||
+        entity->class->byte_size != sizeof(player_t))
+        return (size_t)-1;
+    data = (player_t *)entity->data;
+    data->jmp_strength = data->jump_power;
+    data->jmp_gravity = 0;
+    return (size_t)0;
+}
